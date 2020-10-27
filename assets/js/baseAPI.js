@@ -10,4 +10,12 @@ var baseUrl = 'http://ajax.frontend.itheima.net'
 $.ajaxPrefilter(function (options) {
     // 拼接对应环境的服务器地址
     options.url = baseUrl + options.url
+
+    // 给指定的地址添加身份认证
+
+    if (options.url.indexOf('/my/') !== -1) {
+        options.headers = {
+            Authorization: localStorage.getItem('token') || ''
+        }
+    }
 })
