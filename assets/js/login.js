@@ -30,26 +30,54 @@ $(function () {
     })
 
     // 3. 注册,发起Ajax请求
+    var layer = layui.layer
     $('#form-reg').on('submit', function (e) {
         // 阻止表单默认提交
         e.preventDefault();
         // 发送Ajax请求
         $.ajax({
             type: 'POST',
-            url: 'http://ajax.frontend.itheima.net/api/reguser',
+            url: '/api/reguser',
             data: {
                 username: $('#form-reg input[name=username]').val(),
                 password: $('#form-reg input[name=password]').val()
             },
             success: function (res) {
-                console.log(res);
+                // console.log(res);
                 if (res.status !== 0) {
                     return layer.msg(res.message)
                 }
-                layer.msg(res.message)
+                layer.msg('注册成功,请登录!')
+                // 跳转到登录表单
+                $('#link_login').trigger('click')
+                // 清空表单
+                $('#form-reg')[0].reset();
             }
         })
     })
 
+    // 4. 登录,发起Ajax请求
+    $('#form-login').on('submit', function (e) {
+        // 阻止默认行为
+        e.preventDefault();
+        // 发送Ajax请求
+        var data = $(this).serialize()
+        $.ajax({
+            method: 'POST',
+            url: '/api/login',
+            data,
+            success: function (res) {
+                // console.log(res);
+                if (res.status !== 0) {
+                    return layer.msg(res.message)
+                }
+                layer.msg('登录成功!')
+                // 保存token,未来接口需要使用
+                localStorage.setItem('token', res.token);
+                // 跳转
+                location.href = '/index.html'
+            }
+        })
+    })
 })
 
