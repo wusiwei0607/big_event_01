@@ -18,4 +18,17 @@ $.ajaxPrefilter(function (options) {
             Authorization: localStorage.getItem('token') || ''
         }
     }
+
+    // 身份拦截,判断身份认证信息
+    options.complete = function  (res) {
+        // console.log(res);
+        // 在complete回调函数中,可以使用 res.responseJSON  拿到服务器返回的数据
+        var obj = res.responseJSON
+        if (obj.status === 1 && obj.message === '身份认证失败！') {
+            // 删除token
+            localStorage.removeItem('token')
+            // 跳转页面
+            location.href = '/login.html'
+        }
+    }
 })
